@@ -153,6 +153,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/extraExercise1EditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/day1"
@@ -180,6 +181,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/extraExercise2EditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/day2"
@@ -205,6 +207,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/extraExercise3EditText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/day3" />
@@ -229,6 +232,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/extraExercise4EditText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/day4"
