@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">5-3-1 App</string>
+    <string name="view_workout_button">View Workout</string>
+    <string name="set_program_button">Set Program Details</string>
+    <string name="training_history_button">Training History</string>
+    <string name="one_rep_calc_button">1RM Calculator</string>
+    <string name="settings_button">Settings</string>
+    <string name="main_title">5/3/1 Tracker</string>
+    <string name="set_program_title">Set Program</string>
+    <string name="ohp_TM">OHP Training Max</string>
+    <string name="squat_TM">Squat Training Max</string>
+    <string name="bench_TM">Bench Press Training Max</string>
+    <string name="deadlift_TM">Deadlift Training Max</string>
+    <string name="save_TM">Save</string>
+    <string name="main_exercises_text">Main Exercises</string>
+    <string name="extra_exercises_text">Extra Exercises</string>
+    <string name="extra_exercise_spinner">Extra Exercise</string>
+    <string name="day1">Day 1 Max</string>
+    <string name="day2">Day 2 Max</string>
+    <string name="day3">Day 3 Max</string>
+    <string name="day4">Day 4 Max</string>
+</resources>
