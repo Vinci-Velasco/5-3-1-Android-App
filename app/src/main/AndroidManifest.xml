@@ -11,10 +11,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.531App"
+        android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
-            android:name=".setProgramActivity"
+            android:name=".SetProgramActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
             />
