@@ -13,11 +13,15 @@ import java.util.List;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    public static final String EXERCISES = "EXERCISES";
+    public static final String EXERCISES_TABLE = "EXERCISES";
     public static final String COLUMN_NAME = "Name";
     public static final String COLUMN_TRAINING_MAX = "TrainingMax";
     public static final String COLUMN_DAY = "Day";
     public static final String COLUMN_IS_EXTRA_EXERCISE = "IsExtraExercise";
+
+    public static final String CURRENT_CYCLE_PROGRESS_TABLE = "CYCLE_PROGRESS";
+    public static final String COLUMN_WEEK = "Week";
+    public static final String COLUMN_IS_COMPLETED = "IsCompleted";
 
     public DataBaseHelper(@Nullable Context context) {
         super(context, "exercise.db", null, 1);
@@ -26,10 +30,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // called first time db is accessed
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + EXERCISES + " (" +
+
+        String createTableStatement1 = "CREATE TABLE " + EXERCISES_TABLE + " (" +
                 COLUMN_NAME + " TEXT, " + COLUMN_TRAINING_MAX + " INT, " +
                 COLUMN_DAY + " INT, " + COLUMN_IS_EXTRA_EXERCISE + " BOOL)";
-        sqLiteDatabase.execSQL(createTableStatement);
+        sqLiteDatabase.execSQL(createTableStatement1);
+
+        String createTableStatement2 = "CREATE TABLE " + CURRENT_CYCLE_PROGRESS_TABLE + " (" +
+                COLUMN_WEEK + " INT, " + COLUMN_DAY + " INT, " +
+                COLUMN_IS_COMPLETED + " BOOL)";
+        sqLiteDatabase.execSQL(createTableStatement2);
     }
 
     // called if database version changes
@@ -42,9 +52,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Add an exercise the SQLite database
      *
      * @param exerciseModel object of the exercise to be inserted
+     *
      * @return true if successful, false otherwise
      */
-    public boolean addToDB(ExerciseModel exerciseModel) {
+    public boolean addExerciseToDB(ExerciseModel exerciseModel) {
         SQLiteDatabase db = this.getWritableDatabase(); // for insertable actions
         ContentValues cv = new ContentValues();
 
@@ -53,7 +64,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_DAY, exerciseModel.getDay());
         cv.put(COLUMN_IS_EXTRA_EXERCISE, exerciseModel.isExtraExercise());
 
-        long insert = db.insert(EXERCISES, null, cv);
+        long insert = db.insert(EXERCISES_TABLE, null, cv);
         return (insert != -1);
     }
 
@@ -66,7 +77,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public ExerciseModel getExerciseFromDB(int day, boolean isExtraExercise) {
         int isExtraExerciseAsInt = isExtraExercise ? 1: 0;
-        String queryString = "SELECT * FROM " + EXERCISES + " WHERE "
+        String queryString = "SELECT * FROM " + EXERCISES_TABLE + " WHERE "
                 + COLUMN_IS_EXTRA_EXERCISE + "='" + isExtraExerciseAsInt + "' AND " + COLUMN_DAY +
                 "=" + day;
 
@@ -96,13 +107,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * @param exerciseModel
      * @return true if add or update was sucessful, false otherwise.
      */
-    public boolean addOrUpdate(ExerciseModel exerciseModel) {
+    public boolean addOrUpdateExercise(ExerciseModel exerciseModel) {
         ExerciseModel exerciseModelInDB = getExerciseFromDB(
                 exerciseModel.getDay(), exerciseModel.isExtraExercise());
 
         // not in the db therefore add it into the db
         if (exerciseModelInDB == null) {
-            return addToDB(exerciseModel);
+            return addExerciseToDB(exerciseModel);
 
             // is in the db therefore update the one in the db
         } else {
@@ -114,10 +125,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Returns a list of all the exercises from the db as ExerciseModel objects
      * @return List of all ExerciseModels
      */
-    public List<ExerciseModel> getAll() {
+    public List<ExerciseModel> getAllExercises() {
         List<ExerciseModel> allExercises = new ArrayList<>();
 
-        String queryString = "SELECT * FROM " + EXERCISES;
+        String queryString = "SELECT * FROM " + EXERCISES_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(queryString, null);
@@ -142,10 +153,73 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return allExercises;
     }
 
+    public List<Boolean> getAllCycleProgress() {
+        List<Boolean> allDaysCompletedStatus = new ArrayList<>();
+
+        String queryString = "SELECT * FROM " + CURRENT_CYCLE_PROGRESS_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        if (cursor.moveToFirst()) {
+            do {
+                boolean dayCompletedStatus = cursor.getInt(2) == 1 ? true : false;
+                allDaysCompletedStatus.add(dayCompletedStatus);
+
+            } while (cursor.moveToNext());
+
+        } else {
+
+        }
+
+        cursor.close();
+        db.close();
+        return allDaysCompletedStatus;
+    }
+
+    /**
+     * If CYCLE_PROGRESS table not populated, populate the database with
+     * all cycle days as NOT completed
+     */
+    public void populateCycleProgressTable() {
+        List<Boolean> allCycleProgress = getAllCycleProgress();
+
+        if (allCycleProgress.size() == 0) {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            for (int i = 1; i < 4; i++) {
+                for (int j = 1; j < 5; j++) {
+                    ContentValues cv = new ContentValues();
+
+                    cv.put(COLUMN_WEEK, i);
+                    cv.put(COLUMN_DAY, j);
+                    cv.put(COLUMN_IS_COMPLETED, false);
+                    db.insert(CURRENT_CYCLE_PROGRESS_TABLE, null, cv);
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates a day in the cycle to be completed
+     * @param week the week of the cycle to be updated
+     * @param day the day of the cycle to be updated
+     * @return true if update was successful, false otherwise
+     */
+    public boolean updateCycleProgress(int week, int day) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_IS_COMPLETED, true);
+        int numOfRows = db.update(CURRENT_CYCLE_PROGRESS_TABLE, cv, COLUMN_WEEK + "=? AND "
+            + COLUMN_DAY + "=?", new String[] {String.valueOf(week), String.valueOf(day)});
+
+        return numOfRows == 1;
+    }
+
     // just for testing purposes
     public void deleteAllRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+ EXERCISES);
+        db.execSQL("DELETE FROM "+ EXERCISES_TABLE);
     }
 
     // update the exercise in the db
@@ -160,13 +234,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // if extra exercise, update name field as well
         if (exerciseModel.isExtraExercise()) {
             cv.put(COLUMN_NAME, exerciseModel.getName());
-            numOfRows = db.update(EXERCISES, cv, COLUMN_DAY + "=? AND " +
+            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_DAY + "=? AND " +
                     COLUMN_IS_EXTRA_EXERCISE + "=?", new String[]{
                     String.valueOf(exerciseModel.getDay()), String.valueOf(1)});
 
-            // only update training max
+        // only update training max
         } else {
-            numOfRows = db.update(EXERCISES, cv, COLUMN_NAME + "=? AND " +
+            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_NAME + "=? AND " +
                     COLUMN_DAY + "=?", new String[]{
                     exerciseModel.getName(), String.valueOf(exerciseModel.getDay())});
         }

@@ -19,17 +19,17 @@
         app:layout_constraintVertical_bias="0.769">
 
         <Button
-            android:id="@+id/viewWorkoutButton"
+            android:id="@+id/startWorkoutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_workout_button" />
+            android:text="@string/start_workout_button" />
 
         <Button
             android:id="@+id/setProgramButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="@string/set_program_button" />
+            android:text="@string/set_program_title" />
 
         <Button
             android:id="@+id/trainingHistoryButton"

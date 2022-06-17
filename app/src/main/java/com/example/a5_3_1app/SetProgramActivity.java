@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SetProgramActivity extends AppCompatActivity {
@@ -134,14 +132,14 @@ public class SetProgramActivity extends AppCompatActivity {
                 );
 
                 // add/update all exercises to the database
-                dataBaseHelper.addOrUpdate(exerciseModel1);
-                dataBaseHelper.addOrUpdate(exerciseModel2);
-                dataBaseHelper.addOrUpdate(exerciseModel3);
-                dataBaseHelper.addOrUpdate(exerciseModel4);
-                dataBaseHelper.addOrUpdate(extraExerciseModel1);
-                dataBaseHelper.addOrUpdate(extraExerciseModel2);
-                dataBaseHelper.addOrUpdate(extraExerciseModel3);
-                dataBaseHelper.addOrUpdate(extraExerciseModel4);
+                dataBaseHelper.addOrUpdateExercise(exerciseModel1);
+                dataBaseHelper.addOrUpdateExercise(exerciseModel2);
+                dataBaseHelper.addOrUpdateExercise(exerciseModel3);
+                dataBaseHelper.addOrUpdateExercise(exerciseModel4);
+                dataBaseHelper.addOrUpdateExercise(extraExerciseModel1);
+                dataBaseHelper.addOrUpdateExercise(extraExerciseModel2);
+                dataBaseHelper.addOrUpdateExercise(extraExerciseModel3);
+                dataBaseHelper.addOrUpdateExercise(extraExerciseModel4);
 
 
                 Intent intent = new Intent(SetProgramActivity.this,
@@ -166,7 +164,7 @@ public class SetProgramActivity extends AppCompatActivity {
      * edittext fields for the user to see.
      */
     private void setInitialEditTextValues() {
-        List<ExerciseModel> allExercises = dataBaseHelper.getAll();
+        List<ExerciseModel> allExercises = dataBaseHelper.getAllExercises();
 
 
         // all exercises is either empty or has all 8 exercises in the db

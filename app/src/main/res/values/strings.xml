@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">5-3-1 App</string>
-    <string name="view_workout_button">View Workout</string>
-    <string name="set_program_button">Set Program Details</string>
+    <string name="start_workout_button">Start Workout</string>
     <string name="training_history_button">Training History</string>
     <string name="one_rep_calc_button">1RM Calculator</string>
     <string name="settings_button">Settings</string>
@@ -19,4 +18,20 @@
     <string name="day2">Day 2 Max</string>
     <string name="day3">Day 3 Max</string>
     <string name="day4">Day 4 Max</string>
+    <string name="choose_day">Choose Day</string>
+    <string name="go_button">Go</string>
+    <string name="week1Day1">Week 1 Day 1</string>
+    <string name="week1Day2">Week 1 Day 2</string>
+    <string name="week1Day3">Week 1 Day 3</string>
+    <string name="week1Day4">Week 1 Day 4</string>
+    <string name="week2Day1">Week 2 Day 1</string>
+    <string name="week2Day2">Week 2 Day 2</string>
+    <string name="week2Day3">Week 2 Day 3</string>
+    <string name="week2Day4">Week 2 Day 4</string>
+    <string name="week3Day1">Week 3 Day 1</string>
+    <string name="week3Day2">Week 3 Day 2</string>
+    <string name="week3Day3">Week 3 Day 3</string>
+    <string name="week3Day4">Week 3 Day 4</string>
+    <string name="finishWorkoutBtn">Finish Workout</string>
+    <string name="placeholder">Placeholder</string>
 </resources>
