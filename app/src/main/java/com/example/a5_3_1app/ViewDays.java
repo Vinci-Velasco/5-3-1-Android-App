@@ -72,6 +72,7 @@ public class ViewDays extends AppCompatActivity {
         DataBaseHelper db = new DataBaseHelper(ViewDays.this);
         db.populateCycleProgressTable();
         displayFinishedDays();
+        setDefaultRadioButton();
 
         goButton = findViewById(R.id.goButton);
         goButton.setOnClickListener(view -> {
@@ -101,6 +102,21 @@ public class ViewDays extends AppCompatActivity {
             if (allCycleProgress.get(i)) {
                 listOfRadioButtons.get(i).setPaintFlags
                         (listOfRadioButtons.get(i).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+        }
+    }
+
+    /**
+     * Sets the default radio button to the most recent uncompleted day
+     */
+    private void setDefaultRadioButton() {
+        DataBaseHelper db = new DataBaseHelper(ViewDays.this);
+        List<Boolean> allCycleProgress = db.getAllCycleProgress();
+
+        for (int i = 0; i < 12; i++) {
+            if (!allCycleProgress.get(i)) {
+                listOfRadioButtons.get(i).setChecked(true);
+                break;
             }
         }
     }
