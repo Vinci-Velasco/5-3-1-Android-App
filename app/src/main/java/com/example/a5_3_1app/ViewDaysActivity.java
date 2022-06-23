@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,7 +12,7 @@ import android.widget.RadioGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewDays extends AppCompatActivity {
+public class ViewDaysActivity extends AppCompatActivity {
     private RadioButton radioButton1;
     private RadioButton radioButton2;
     private RadioButton radioButton3;
@@ -32,11 +30,16 @@ public class ViewDays extends AppCompatActivity {
     private List<RadioButton> listOfRadioButtons;
 
     private Button goButton;
+    private Button finishCycleButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_days);
+
+        // set title bar
+        getSupportActionBar().setTitle("Choose Day");
 
         // initialize radio buttons
         radioGroup = findViewById(R.id.radioGroup);
@@ -69,8 +72,9 @@ public class ViewDays extends AppCompatActivity {
         listOfRadioButtons.add(radioButton12);
 
         // See if CYCLE_PROGRESS db is pre-populated and populate it if not
-        DataBaseHelper db = new DataBaseHelper(ViewDays.this);
+        DataBaseHelper db = new DataBaseHelper(ViewDaysActivity.this);
         db.populateCycleProgressTable();
+
         displayFinishedDays();
         setDefaultRadioButton();
 
@@ -82,12 +86,23 @@ public class ViewDays extends AppCompatActivity {
             RadioButton radioButtonSelected = radioGroup.findViewById(radioButtonID);
             String radioBtnText = String.valueOf(radioButtonSelected.getText());
 
-            Intent intent = new Intent(ViewDays.this,
+            Intent intent = new Intent(ViewDaysActivity.this,
                     WorkoutActivity.class);
 
             // pass which radio button was selected to WorkoutActivity
             intent.putExtra("RADIO_BTN_SELECTED", radioBtnText);
             startActivity(intent);
+        });
+
+        // send the user to the update cycle page when they click the finish cycle button
+        finishCycleButton = findViewById(R.id.finishCycleButton);
+        finishCycleButton.setOnClickListener(view -> {
+
+            Intent intent = new Intent(ViewDaysActivity.this,
+                    UpdateCycleActivity.class);
+
+            startActivity(intent);
+
         });
     }
 
@@ -95,7 +110,7 @@ public class ViewDays extends AppCompatActivity {
      * Get cycle progress from the db and cross any days that have already been completed
      */
     private void displayFinishedDays() {
-        DataBaseHelper db = new DataBaseHelper(ViewDays.this);
+        DataBaseHelper db = new DataBaseHelper(ViewDaysActivity.this);
         List<Boolean> allCycleProgress = db.getAllCycleProgress();
 
         for (int i = 0; i < 12; i++) {
@@ -110,7 +125,7 @@ public class ViewDays extends AppCompatActivity {
      * Sets the default radio button to the most recent uncompleted day
      */
     private void setDefaultRadioButton() {
-        DataBaseHelper db = new DataBaseHelper(ViewDays.this);
+        DataBaseHelper db = new DataBaseHelper(ViewDaysActivity.this);
         List<Boolean> allCycleProgress = db.getAllCycleProgress();
 
         for (int i = 0; i < 12; i++) {

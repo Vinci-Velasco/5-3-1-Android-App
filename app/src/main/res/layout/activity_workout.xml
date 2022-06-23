@@ -17,25 +17,15 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/workoutDayTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/placeholder"
-        android:textSize="40sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="350dp"
         android:layout_height="515dp"
         android:layout_marginStart="28dp"
-        app:layout_constraintBottom_toTopOf="@+id/finishWorkoutBtn"
+        android:layout_marginBottom="88dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workoutDayTitle"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.546">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,6 +51,7 @@
 
             <CheckBox
                 android:id="@+id/mainExercise2"
+                style="@android:style/Widget.CompoundButton.CheckBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -105,7 +96,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/BBBTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -114,7 +105,7 @@
                 android:textSize="20sp" />
 
             <CheckBox
-                android:id="@+id/checkBox9"
+                android:id="@+id/BBBCheckBox1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -123,7 +114,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox10"
+                android:id="@+id/BBBCheckBox2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -132,7 +123,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox11"
+                android:id="@+id/BBBCheckBox3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -141,7 +132,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox12"
+                android:id="@+id/BBBCheckBox4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -150,7 +141,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox13"
+                android:id="@+id/BBBCheckBox5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -168,7 +159,7 @@
                 android:textSize="20sp" />
 
             <CheckBox
-                android:id="@+id/checkBox14"
+                android:id="@+id/extraExerciseCheckBox1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -177,7 +168,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox15"
+                android:id="@+id/extraExerciseCheckBox2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -186,7 +177,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
-                android:id="@+id/checkBox16"
+                android:id="@+id/extraExerciseCheckBox3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"

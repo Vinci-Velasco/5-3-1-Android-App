@@ -35,4 +35,8 @@
     <string name="finishWorkoutBtn">Finish Workout</string>
     <string name="placeholder">Placeholder</string>
     <string name="BBB">Boring But Big</string>
+    <string name="finishCycleButton">Finish Cycle</string>
+    <string name="template">5/3/1 Template</string>
+    <string name="updateCycleText">Choose exercises to update</string>
+    <string name="updateCycleButton">Update Cycle</string>
 </resources>

@@ -102,6 +102,36 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Update an exercise in the database
+     * @param exerciseModel The exercise to be updated
+     * @return boolean value if the update was successful
+     */
+    public boolean updateExercise(ExerciseModel exerciseModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_TRAINING_MAX, exerciseModel.getTrainingMax());
+
+        int numOfRows;
+
+        // if extra exercise, update name field as well
+        if (exerciseModel.isExtraExercise()) {
+            cv.put(COLUMN_NAME, exerciseModel.getName());
+            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_DAY + "=? AND " +
+                    COLUMN_IS_EXTRA_EXERCISE + "=?", new String[]{
+                    String.valueOf(exerciseModel.getDay()), String.valueOf(1)});
+
+            // only update training max
+        } else {
+            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_NAME + "=? AND " +
+                    COLUMN_DAY + "=?", new String[]{
+                    exerciseModel.getName(), String.valueOf(exerciseModel.getDay())});
+        }
+
+        return numOfRows == 1;
+    }
+
     /** Searches the db for the exercise. If already in the db, update the exercise. Otherwise
      * add the exercise.
      * @param exerciseModel
@@ -153,6 +183,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return allExercises;
     }
 
+    /**
+     * Get the progress of all the days in the current cycle
+     * @return a list of boolean values representing a finished day in the cycle or not
+     */
     public List<Boolean> getAllCycleProgress() {
         List<Boolean> allDaysCompletedStatus = new ArrayList<>();
 
@@ -203,48 +237,41 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Updates a day in the cycle to be completed
      * @param week the week of the cycle to be updated
      * @param day the day of the cycle to be updated
+     * @param newStatus the new boolean value if the day in the cycle is completed or not
      * @return true if update was successful, false otherwise
      */
-    public boolean updateCycleProgress(int week, int day) {
+    public boolean updateCycleProgress(int week, int day, boolean newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_IS_COMPLETED, true);
+        cv.put(COLUMN_IS_COMPLETED, newStatus);
         int numOfRows = db.update(CURRENT_CYCLE_PROGRESS_TABLE, cv, COLUMN_WEEK + "=? AND "
             + COLUMN_DAY + "=?", new String[] {String.valueOf(week), String.valueOf(day)});
 
         return numOfRows == 1;
     }
 
-    // just for testing purposes
-    public void deleteAllRecords() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+ EXERCISES_TABLE);
-    }
+    /**
+     * Set all cycle progress to false to reset
+     * @return
+     */
+    public boolean resetProgressCycle() {
+        for (int i = 1; i <= 3; i++) {
+            for (int j = 1; j <= 4; j++) {
 
-    // update the exercise in the db
-    private boolean updateExercise(ExerciseModel exerciseModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_TRAINING_MAX, exerciseModel.getTrainingMax());
-
-        int numOfRows;
-
-        // if extra exercise, update name field as well
-        if (exerciseModel.isExtraExercise()) {
-            cv.put(COLUMN_NAME, exerciseModel.getName());
-            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_DAY + "=? AND " +
-                    COLUMN_IS_EXTRA_EXERCISE + "=?", new String[]{
-                    String.valueOf(exerciseModel.getDay()), String.valueOf(1)});
-
-        // only update training max
-        } else {
-            numOfRows = db.update(EXERCISES_TABLE, cv, COLUMN_NAME + "=? AND " +
-                    COLUMN_DAY + "=?", new String[]{
-                    exerciseModel.getName(), String.valueOf(exerciseModel.getDay())});
+                if(!updateCycleProgress(i, j, false)) {
+                    return false;
+                }
+            }
         }
 
-        return numOfRows == 1;
+        return true;
     }
+
+// just for testing purposes
+//    public void deleteAllRecords() {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.execSQL("DELETE FROM "+ EXERCISES_TABLE);
+//    }
+
  }

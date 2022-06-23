@@ -28,11 +28,13 @@ public class SetProgramActivity extends AppCompatActivity {
     private EditText extraExercise3EditText;
     private EditText extraExercise4EditText;
 
-    List<String> spinnerOptions;
-    private Spinner spinner1;
-    private Spinner spinner2;
-    private Spinner spinner3;
-    private Spinner spinner4;
+    List<String> exerciseSpinnerOptions;
+    List<String> templateSpinnerOptions;
+    private Spinner templateSpinner;
+    private Spinner exerciseSpinner1;
+    private Spinner exerciseSpinner2;
+    private Spinner exerciseSpinner3;
+    private Spinner exerciseSpinner4;
 
     DataBaseHelper dataBaseHelper;
 
@@ -41,45 +43,32 @@ public class SetProgramActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_program);
 
-        // initialize db
-        dataBaseHelper = new DataBaseHelper(SetProgramActivity.this);
-
-        // options for the spinners
-        spinnerOptions = new ArrayList<>();
-        spinnerOptions.add("Bicep Curls");
-        spinnerOptions.add("Bent Over Rows");
-        spinnerOptions.add("Lunges");
-        spinnerOptions.add("Calf Raises");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, spinnerOptions);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-
-        // set spinners
-        spinner1 = findViewById(R.id.spinner1);
-        spinner1.setAdapter(dataAdapter);
-
-        spinner2 = findViewById(R.id.spinner2);
-        spinner2.setAdapter(dataAdapter);
-
-        spinner3 = findViewById(R.id.spinner3);
-        spinner3.setAdapter(dataAdapter);
-
-        spinner4 = findViewById(R.id.spinner4);
-        spinner4.setAdapter(dataAdapter);
-
-        // set other buttons and edit text
-        ohpEditText = findViewById(R.id.ohpTM);
-        squatEditText = findViewById(R.id.squatTM);
-        benchEditText = findViewById(R.id.benchTM);
-        deadLiftEditText = findViewById(R.id.deadliftTM);
-
+        // initialize all views
         extraExercise1EditText = findViewById(R.id.extraExercise1EditText);
         extraExercise2EditText = findViewById(R.id.extraExercise2EditText);
         extraExercise3EditText = findViewById(R.id.extraExercise3EditText);
         extraExercise4EditText = findViewById(R.id.extraExercise4EditText);
 
+        ohpEditText = findViewById(R.id.ohpTM);
+        squatEditText = findViewById(R.id.squatTM);
+        benchEditText = findViewById(R.id.benchTM);
+        deadLiftEditText = findViewById(R.id.deadliftTM);
+
         saveButton = findViewById(R.id.saveTMButton);
+
+        templateSpinner = findViewById(R.id.templateSpinner);
+        exerciseSpinner1 = findViewById(R.id.spinner1);
+        exerciseSpinner2 = findViewById(R.id.spinner2);
+        exerciseSpinner3 = findViewById(R.id.spinner3);
+        exerciseSpinner4 = findViewById(R.id.spinner4);
+
+        // set title bar
+        getSupportActionBar().setTitle("Set Program");
+
+        // initialize db
+        dataBaseHelper = new DataBaseHelper(SetProgramActivity.this);
+
+        setAllSpinners();
         setInitialEditTextValues();
 
         saveButton.setOnClickListener(view -> {
@@ -108,25 +97,25 @@ public class SetProgramActivity extends AppCompatActivity {
                 );
 
                 ExerciseModel extraExerciseModel1 = new ExerciseModel(
-                        spinner1.getSelectedItem().toString(),
+                        exerciseSpinner1.getSelectedItem().toString(),
                         Integer.parseInt(extraExercise1EditText.getText().toString()),
                         1, true
                 );
 
                 ExerciseModel extraExerciseModel2 = new ExerciseModel(
-                        spinner2.getSelectedItem().toString(),
+                        exerciseSpinner2.getSelectedItem().toString(),
                         Integer.parseInt(extraExercise2EditText.getText().toString()),
                         2, true
                 );
 
                 ExerciseModel extraExerciseModel3 = new ExerciseModel(
-                        spinner3.getSelectedItem().toString(),
+                        exerciseSpinner3.getSelectedItem().toString(),
                         Integer.parseInt(extraExercise3EditText.getText().toString()),
                         3, true
                 );
 
                 ExerciseModel extraExerciseModel4 = new ExerciseModel(
-                        spinner4.getSelectedItem().toString(),
+                        exerciseSpinner4.getSelectedItem().toString(),
                         Integer.parseInt(extraExercise4EditText.getText().toString()),
                         4, true
                 );
@@ -160,6 +149,39 @@ public class SetProgramActivity extends AppCompatActivity {
     }
 
     /**
+     * Set all the spinners with their appropriate options, as well as setting the default value
+     */
+    private void setAllSpinners() {
+        // options for the 5/3/1 template spinners
+        templateSpinnerOptions = new ArrayList<>();
+        templateSpinnerOptions.add("Boring But Big");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, templateSpinnerOptions);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
+        // set template spinner
+        templateSpinner.setAdapter(dataAdapter);
+
+        // options for the exercise spinners
+        exerciseSpinnerOptions = new ArrayList<>();
+        exerciseSpinnerOptions.add("Bicep Curls");
+        exerciseSpinnerOptions.add("Bent Over Rows");
+        exerciseSpinnerOptions.add("Lunges");
+        exerciseSpinnerOptions.add("Calf Raises");
+
+        dataAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, exerciseSpinnerOptions);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
+        // set exercise spinners
+        exerciseSpinner1.setAdapter(dataAdapter);
+        exerciseSpinner2.setAdapter(dataAdapter);
+        exerciseSpinner3.setAdapter(dataAdapter);
+        exerciseSpinner4.setAdapter(dataAdapter);
+    }
+
+    /**
      * Grab the training maxes from the db and set that to the default value of all the
      * edittext fields for the user to see.
      */
@@ -181,10 +203,10 @@ public class SetProgramActivity extends AppCompatActivity {
             extraExercise4EditText.setText(String.valueOf(allExercises.get(7).getTrainingMax()));
 
             // set spinner values to the name that was saved in the db
-            spinner1.setSelection(spinnerOptions.indexOf(allExercises.get(4).getName()));
-            spinner2.setSelection(spinnerOptions.indexOf(allExercises.get(5).getName()));
-            spinner3.setSelection(spinnerOptions.indexOf(allExercises.get(6).getName()));
-            spinner4.setSelection(spinnerOptions.indexOf(allExercises.get(7).getName()));
+            exerciseSpinner1.setSelection(exerciseSpinnerOptions.indexOf(allExercises.get(4).getName()));
+            exerciseSpinner2.setSelection(exerciseSpinnerOptions.indexOf(allExercises.get(5).getName()));
+            exerciseSpinner3.setSelection(exerciseSpinnerOptions.indexOf(allExercises.get(6).getName()));
+            exerciseSpinner4.setSelection(exerciseSpinnerOptions.indexOf(allExercises.get(7).getName()));
         }
     }
 

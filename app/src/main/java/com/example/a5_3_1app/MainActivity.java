@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (db.getAllExercises().size() == 8) {
                 Intent intent = new Intent(MainActivity.this,
-                        ViewDays.class);
+                        ViewDaysActivity.class);
                 startActivity(intent);
             } else {
                 Toast toast = Toast.makeText(

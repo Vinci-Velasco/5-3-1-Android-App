@@ -14,10 +14,13 @@
         android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
+            android:name=".UpdateCycleActivity"
+            android:exported="false" />
+        <activity
             android:name=".WorkoutActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewDays"
+            android:name=".ViewDaysActivity"
             android:exported="false" />
         <activity
             android:name=".SetProgramActivity"

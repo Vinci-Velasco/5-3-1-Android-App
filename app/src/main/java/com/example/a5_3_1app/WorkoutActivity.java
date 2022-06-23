@@ -12,10 +12,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutActivity extends AppCompatActivity {
 
+
+public class WorkoutActivity extends AppCompatActivity {
     private TextView title;
     private TextView mainWorkoutTitle;
+    private TextView BBBWorkoutTitle;
     private TextView extraExerciseTitle;
 
     private CheckBox mainExerciseCheckBox1;
@@ -25,21 +27,42 @@ public class WorkoutActivity extends AppCompatActivity {
     private CheckBox mainExerciseCheckBox5;
     private CheckBox mainExerciseCheckBox6;
 
+    private CheckBox BBBCheckBox1;
+    private CheckBox BBBCheckBox2;
+    private CheckBox BBBCheckBox3;
+    private CheckBox BBBCheckBox4;
+    private CheckBox BBBCheckBox5;
+
+    private CheckBox extraExerciseCheckBox1;
+    private CheckBox extraExerciseCheckBox2;
+    private CheckBox extraExerciseCheckBox3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
         // set views
-        title = findViewById(R.id.workoutDayTitle);
         mainWorkoutTitle = findViewById(R.id.mainWorkoutTitle);
+        BBBWorkoutTitle = findViewById(R.id.BBBTitle);
         extraExerciseTitle = findViewById(R.id.extraExerciseTitle);
+
         mainExerciseCheckBox1 = findViewById(R.id.mainExercise1);
         mainExerciseCheckBox2 = findViewById(R.id.mainExercise2);
         mainExerciseCheckBox3 = findViewById(R.id.mainExercise3);
         mainExerciseCheckBox4 = findViewById(R.id.mainExercise4);
         mainExerciseCheckBox5 = findViewById(R.id.mainExercise5);
         mainExerciseCheckBox6 = findViewById(R.id.mainExercise6);
+
+        BBBCheckBox1 = findViewById(R.id.BBBCheckBox1);
+        BBBCheckBox2 = findViewById(R.id.BBBCheckBox2);
+        BBBCheckBox3 = findViewById(R.id.BBBCheckBox3);
+        BBBCheckBox4 = findViewById(R.id.BBBCheckBox4);
+        BBBCheckBox5 = findViewById(R.id.BBBCheckBox5);
+
+        extraExerciseCheckBox1 = findViewById(R.id.extraExerciseCheckBox1);
+        extraExerciseCheckBox2 = findViewById(R.id.extraExerciseCheckBox2);
+        extraExerciseCheckBox3 = findViewById(R.id.extraExerciseCheckBox3);
 
         // get the week and day of the workout from the previous activity
         String radioBtnText = getIntent().getStringExtra("RADIO_BTN_SELECTED");
@@ -55,12 +78,12 @@ public class WorkoutActivity extends AppCompatActivity {
 
             // set the week and day of this cycle as completed
             DataBaseHelper db = new DataBaseHelper(WorkoutActivity.this);
-            if(!db.updateCycleProgress(week, day)) {
+            if(!db.updateCycleProgress(week, day, true)) {
                 Toast.makeText(this, "Error with finishing workout", Toast.LENGTH_SHORT).show();
 
             } else {
                 Intent intent = new Intent(WorkoutActivity.this,
-                        ViewDays.class);
+                        ViewDaysActivity.class);
                 startActivity(intent);
             }
         });
@@ -74,11 +97,13 @@ public class WorkoutActivity extends AppCompatActivity {
      */
     private void setWorkoutTitles(int week, int day) {
         String titleText = "Week " + week + ": Day " + day;
-        title.setText(titleText);
+        getSupportActionBar().setTitle(titleText);
 
         DataBaseHelper db = new DataBaseHelper(WorkoutActivity.this);
         ExerciseModel mainExercise = db.getExerciseFromDB(day, false);
         mainWorkoutTitle.setText(mainExercise.getName());
+
+        BBBWorkoutTitle.setText(mainExercise.getName() + " (Boring But Big)");
 
         ExerciseModel extraExercise = db.getExerciseFromDB(day, true);
         extraExerciseTitle.setText(extraExercise.getName());
@@ -130,80 +155,81 @@ public class WorkoutActivity extends AppCompatActivity {
                 break;
         }
 
-        // Calculate the percentage math (rounded to nearest fifth) and set the text
-        // to all exercise checkboxes
+        setMainExerciseNumbers(mainExercise, percentsPerSet, repsPerSet);
+        setBBBNumbers(mainExercise);
+
+        ExerciseModel extraExercise = db.getExerciseFromDB(day, true);
+        setExtraExerciseNumbers(extraExercise);
+    }
+
+    /**
+     * Sets the appropriate weight numbers and reps for all sets for the main exercise
+     * @param mainExercise the main exercise that needs to be set
+     * @param percentsPerSet the percentages of TM for each set
+     * @param repsPerSet the reps needed for each set
+     */
+    private void setMainExerciseNumbers(
+            ExerciseModel mainExercise, double[] percentsPerSet, int[] repsPerSet) {
+
         long set1Weight = 5 * (Math.round(percentsPerSet[0] * mainExercise.getTrainingMax() / 5));
         List<String> set1PlatesPerSide = calculatePlatesPerSide((double) set1Weight);
-        String platesPerSideString;
 
-        if (set1PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set1PlatesPerSide.toString();
-        }
-
+        String platesPerSideString = getPlatesPerSideAsString(set1PlatesPerSide);
         String set1Text = repsPerSet[0] + " x " + set1Weight + " lb\t\t"  + platesPerSideString;
         mainExerciseCheckBox1.setText(set1Text);
 
         long set2Weight = 5 * (Math.round(percentsPerSet[1] * mainExercise.getTrainingMax() / 5));
         List<String> set2PlatesPerSide = calculatePlatesPerSide((double)set2Weight);
 
-        if (set2PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set2PlatesPerSide.toString();
-        }
-
+        platesPerSideString = getPlatesPerSideAsString(set2PlatesPerSide);
         String set2Text = repsPerSet[1] + " x " + set2Weight  + " lb\t\t" + platesPerSideString;
         mainExerciseCheckBox2.setText(set2Text);
 
         long set3Weight = 5 * (Math.round(percentsPerSet[2] * mainExercise.getTrainingMax() / 5));
         List<String> set3PlatesPerSide = calculatePlatesPerSide((double)set3Weight);
 
-        if (set2PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set3PlatesPerSide.toString();
-        }
-
+        platesPerSideString = getPlatesPerSideAsString(set3PlatesPerSide);
         String set3Text = repsPerSet[2] + " x " + set3Weight + " lb\t\t" + platesPerSideString;
         mainExerciseCheckBox3.setText(set3Text);
 
         long set4Weight = 5 * (Math.round(percentsPerSet[3] * mainExercise.getTrainingMax() / 5));
         List<String> set4PlatesPerSide = calculatePlatesPerSide((double)set4Weight);
 
-        if (set2PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set4PlatesPerSide.toString();
-        }
-
+        platesPerSideString = getPlatesPerSideAsString(set4PlatesPerSide);
         String set4Text = repsPerSet[3] + " x " + set4Weight + " lb\t\t" + platesPerSideString;
         mainExerciseCheckBox4.setText(set4Text);
 
         long set5Weight = 5 * (Math.round(percentsPerSet[4] * mainExercise.getTrainingMax() / 5));
         List<String> set5PlatesPerSide = calculatePlatesPerSide((double)set5Weight);
 
-        if (set2PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set5PlatesPerSide.toString();
-        }
-
+        platesPerSideString = getPlatesPerSideAsString(set5PlatesPerSide);
         String set5Text = repsPerSet[4] + " x " + set5Weight + " lb\t\t" + platesPerSideString;
         mainExerciseCheckBox5.setText(set5Text);
 
         long set6Weight = 5 * (Math.round(percentsPerSet[5] * mainExercise.getTrainingMax() / 5));
         List<String> set6PlatesPerSide = calculatePlatesPerSide((double)set6Weight);
 
-        if (set2PlatesPerSide == null) {
-            platesPerSideString = "[BAR ONLY]";
-        } else {
-            platesPerSideString = set6PlatesPerSide.toString();
-        }
-
+        platesPerSideString = getPlatesPerSideAsString(set6PlatesPerSide);
         String set6Text = repsPerSet[5] + " x " + set6Weight + " lb\t\t" + platesPerSideString;
         mainExerciseCheckBox6.setText(set6Text);
+    }
+
+
+    /**
+     * Takes a platesPerSide list and converts into an appropriate string
+     * @param platesPerSide the list of strings
+     * @return the platesPerSide list as a string
+     */
+    private String getPlatesPerSideAsString(List<String> platesPerSide) {
+        String platesPerSideString;
+
+        if (platesPerSide == null) {
+            platesPerSideString = "[BAR ONLY]";
+        } else {
+            platesPerSideString = platesPerSide.toString();
+        }
+
+        return platesPerSideString;
     }
 
     /**
@@ -270,5 +296,76 @@ public class WorkoutActivity extends AppCompatActivity {
         }
 
         return platesPerSide;
+    }
+
+    /**
+     * Sets the appropriate weight numbers and reps for all sets for the BORING BUT BIG
+     * section
+     * @param mainExercise the main exercise that needs to be set
+     */
+    private void setBBBNumbers(ExerciseModel mainExercise) {
+        long set1Weight = 5 * (Math.round(0.5 * mainExercise.getTrainingMax() / 5));
+        List<String> set1PlatesPerSide = calculatePlatesPerSide((double) set1Weight);
+
+        String platesPerSideString = getPlatesPerSideAsString(set1PlatesPerSide);
+        String set1Text = "10" + " x " + set1Weight + " lb\t\t"  + platesPerSideString;
+        BBBCheckBox1.setText(set1Text);
+
+        long set2Weight = 5 * (Math.round(0.5 * mainExercise.getTrainingMax() / 5));
+        List<String> set2PlatesPerSide = calculatePlatesPerSide((double)set2Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set2PlatesPerSide);
+        String set2Text = "10" + " x " + set2Weight  + " lb\t\t" + platesPerSideString;
+        BBBCheckBox2.setText(set2Text);
+
+        long set3Weight = 5 * (Math.round(0.5 * mainExercise.getTrainingMax() / 5));
+        List<String> set3PlatesPerSide = calculatePlatesPerSide((double)set3Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set3PlatesPerSide);
+        String set3Text = "10" + " x " + set3Weight + " lb\t\t" + platesPerSideString;
+        BBBCheckBox3.setText(set3Text);
+
+        long set4Weight = 5 * (Math.round(0.5 * mainExercise.getTrainingMax() / 5));
+        List<String> set4PlatesPerSide = calculatePlatesPerSide((double)set4Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set4PlatesPerSide);
+        String set4Text = "10" + " x " + set4Weight + " lb\t\t" + platesPerSideString;
+        BBBCheckBox4.setText(set4Text);
+
+        long set5Weight = 5 * (Math.round(0.5 * mainExercise.getTrainingMax() / 5));
+        List<String> set5PlatesPerSide = calculatePlatesPerSide((double)set5Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set5PlatesPerSide);
+        String set5Text = "10" + " x " + set4Weight + " lb\t\t" + platesPerSideString;
+        BBBCheckBox5.setText(set5Text);
+    }
+
+    /**
+     * Sets the appropriate weight numbers and reps for all sets for the extra exercise
+     * @param extraExercise the extra exercise that needs to be set
+     */
+    private void setExtraExerciseNumbers(
+            ExerciseModel extraExercise) {
+
+        long set1Weight = 5 * (Math.round(0.75 * extraExercise.getTrainingMax() / 5));
+        List<String> set1PlatesPerSide = calculatePlatesPerSide((double) set1Weight);
+
+        String platesPerSideString = getPlatesPerSideAsString(set1PlatesPerSide);
+        String set1Text = "10" + " x " + set1Weight + " lb\t\t"  + platesPerSideString;
+        extraExerciseCheckBox1.setText(set1Text);
+
+        long set2Weight = 5 * (Math.round(0.65 * extraExercise.getTrainingMax() / 5));
+        List<String> set2PlatesPerSide = calculatePlatesPerSide((double)set2Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set2PlatesPerSide);
+        String set2Text = "8" + " x " + set2Weight  + " lb\t\t" + platesPerSideString;
+        extraExerciseCheckBox2.setText(set2Text);
+
+        long set3Weight = 5 * (Math.round(0.55 * extraExercise.getTrainingMax() / 5));
+        List<String> set3PlatesPerSide = calculatePlatesPerSide((double)set3Weight);
+
+        platesPerSideString = getPlatesPerSideAsString(set3PlatesPerSide);
+        String set3Text = "5" + " x " + set3Weight + " lb\t\t" + platesPerSideString;
+        extraExerciseCheckBox3.setText(set3Text);
     }
 }
