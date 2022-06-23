@@ -1,5 +1,6 @@
 package com.example.a5_3_1app;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -38,8 +39,11 @@ public class ViewDaysActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_days);
 
-        // set title bar
-        getSupportActionBar().setTitle("Choose Day");
+        // set title bar and back button
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Choose Day");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         // initialize radio buttons
         radioGroup = findViewById(R.id.radioGroup);

@@ -1,5 +1,6 @@
 package com.example.a5_3_1app;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -23,8 +24,11 @@ public class UpdateCycleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_cycle);
 
-        // set title bar
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Update Cycle");
+        // set title bar and back button
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Update Cycle");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         // initialize views
         listLayout = findViewById(R.id.listLayout);

@@ -1,7 +1,5 @@
 package com.example.a5_3_1app;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,10 @@ public class SetProgramActivity extends AppCompatActivity {
         exerciseSpinner3 = findViewById(R.id.spinner3);
         exerciseSpinner4 = findViewById(R.id.spinner4);
 
-        // set title bar
-        getSupportActionBar().setTitle("Set Program");
+        // set title bar and back button
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Set Program");
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // initialize db
         dataBaseHelper = new DataBaseHelper(SetProgramActivity.this);
@@ -230,10 +233,6 @@ public class SetProgramActivity extends AppCompatActivity {
             return false;
         } else if (TextUtils.isEmpty(extraExercise3EditText.getText())) {
             return false;
-        } else if (TextUtils.isEmpty(extraExercise4EditText.getText())) {
-            return false;
-        }
-
-        return true;
+        } else return !TextUtils.isEmpty(extraExercise4EditText.getText());
     }
 }

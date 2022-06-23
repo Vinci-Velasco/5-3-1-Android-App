@@ -1,5 +1,6 @@
 package com.example.a5_3_1app;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,7 +16,6 @@ import java.util.List;
 
 
 public class WorkoutActivity extends AppCompatActivity {
-    private TextView title;
     private TextView mainWorkoutTitle;
     private TextView BBBWorkoutTitle;
     private TextView extraExerciseTitle;
@@ -97,7 +97,9 @@ public class WorkoutActivity extends AppCompatActivity {
      */
     private void setWorkoutTitles(int week, int day) {
         String titleText = "Week " + week + ": Day " + day;
-        getSupportActionBar().setTitle(titleText);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(titleText);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         DataBaseHelper db = new DataBaseHelper(WorkoutActivity.this);
         ExerciseModel mainExercise = db.getExerciseFromDB(day, false);
