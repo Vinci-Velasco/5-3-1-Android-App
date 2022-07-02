@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -160,7 +161,7 @@ public class SetProgramActivity extends AppCompatActivity {
         templateSpinnerOptions.add("Boring But Big");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, templateSpinnerOptions);
+                this, R.layout.spinner_list, templateSpinnerOptions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
         // set template spinner
