@@ -39,4 +39,9 @@
     <string name="template">5/3/1 Template</string>
     <string name="updateCycleText">Choose exercises to update</string>
     <string name="updateCycleButton">Update Cycle</string>
+    <string name="weightText">Weight (lbs)</string>
+    <string name="repsText">Reps</string>
+    <string name="calculatedORM">Calculated one-rep max: </string>
+    <string name="ormTitle">Enter weight + number of reps</string>
+    <string name="calculateButton">Calculate</string>
 </resources>

@@ -14,22 +14,26 @@
         android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
+            android:name=".OneRepMaxActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".UpdateCycleActivity"
             android:exported="false"
-            android:parentActivityName=".ViewDaysActivity"/>
+            android:parentActivityName=".ViewDaysActivity" />
         <activity
             android:name=".WorkoutActivity"
             android:exported="false"
-            android:parentActivityName=".ViewDaysActivity"/>
+            android:parentActivityName=".ViewDaysActivity" />
         <activity
             android:name=".ViewDaysActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SetProgramActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

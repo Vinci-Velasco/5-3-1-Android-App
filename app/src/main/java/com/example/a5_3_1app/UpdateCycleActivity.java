@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class UpdateCycleActivity extends AppCompatActivity {
 
@@ -29,15 +28,15 @@ public class UpdateCycleActivity extends AppCompatActivity {
         actionBar.setTitle("Update Cycle");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
         // initialize views
         listLayout = findViewById(R.id.listLayout);
         updateCycleButton = findViewById(R.id.updateCycleButton);
 
         // add checkboxes for all the exercises and add to scrollview
         addAllExercisesAsCheckBoxes();
-        updateSelectedExercises();
 
+        // update exercises once user clicks Update Cycle button
+        updateSelectedExercises();
     }
 
     /**
@@ -63,6 +62,7 @@ public class UpdateCycleActivity extends AppCompatActivity {
             checkBox.setLayoutParams(params);
             checkBox.setText(exercise.getName());
             checkBox.setTextSize(18);
+            checkBox.setPadding(80, 0, 0, 0);
 
             listLayout.addView(checkBox);
         }

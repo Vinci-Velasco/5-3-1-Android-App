@@ -39,5 +39,12 @@ public class MainActivity extends AppCompatActivity {
                     SetProgramActivity.class);
             startActivity(intent);
         });
+
+        Button oneRepMaxButton = findViewById(R.id.oneRepCalcButton);
+        oneRepMaxButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,
+                    OneRepMaxActivity.class);
+            startActivity(intent);
+        });
     }
 }
