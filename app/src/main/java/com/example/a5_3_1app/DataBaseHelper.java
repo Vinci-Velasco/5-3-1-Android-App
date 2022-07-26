@@ -23,6 +23,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_WEEK = "Week";
     public static final String COLUMN_IS_COMPLETED = "IsCompleted";
 
+    public static final String TRAINING_HISTORY_TABLE = "TRAINING_HISTORY";
+    public static final String COLUMN_OHP = "OHP";
+    public static final String COLUMN_SQUAT = "Squat";
+    public static final String COLUMN_BENCH_PRESS = "BenchPress";
+    public static final String COLUMN_DEADLIFT = "Deadlift";
+
     public DataBaseHelper(@Nullable Context context) {
         super(context, "exercise.db", null, 1);
     }
@@ -31,15 +37,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
+        // create exercises table
         String createTableStatement1 = "CREATE TABLE " + EXERCISES_TABLE + " (" +
                 COLUMN_NAME + " TEXT, " + COLUMN_TRAINING_MAX + " INT, " +
                 COLUMN_DAY + " INT, " + COLUMN_IS_EXTRA_EXERCISE + " BOOL)";
         sqLiteDatabase.execSQL(createTableStatement1);
 
+        // create table for cycle progress (days completed)
         String createTableStatement2 = "CREATE TABLE " + CURRENT_CYCLE_PROGRESS_TABLE + " (" +
                 COLUMN_WEEK + " INT, " + COLUMN_DAY + " INT, " +
                 COLUMN_IS_COMPLETED + " BOOL)";
         sqLiteDatabase.execSQL(createTableStatement2);
+
+        // create training history table (workout numbers of previous cycles)
+        // only contains workout numbers of the 4 main lifts
+
+        String createTableStatement3 = "CREATE TABLE " + TRAINING_HISTORY_TABLE + "(" + COLUMN_OHP
+                + " INT, " + COLUMN_SQUAT +  " INT, " + COLUMN_BENCH_PRESS + " INT, " +
+                COLUMN_DEADLIFT + " INT)";
+        sqLiteDatabase.execSQL(createTableStatement3);
     }
 
     // called if database version changes
@@ -48,11 +64,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    // EXERCISE methods
+    // ================
+
     /**
      * Add an exercise the SQLite database
-     *
      * @param exerciseModel object of the exercise to be inserted
-     *
      * @return true if successful, false otherwise
      */
     public boolean addExerciseToDB(ExerciseModel exerciseModel) {
@@ -70,7 +87,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /**
      * Query the database to obtain a certain exercise model
-     *
      * @param day  the day of the exercise model
      * @param isExtraExercise if the exercise is an extra one
      * @return ExerciseModel object that has that name and day
@@ -86,6 +102,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // if there is a match with one item in the db
         if (cursor.moveToFirst()) {
+
+            // param represents column of the table
             String exerciseName = cursor.getString(0);
             int exerciseTM = cursor.getInt(1);
             int exerciseDay = cursor.getInt(2);
@@ -174,14 +192,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
                 allExercises.add(exerciseModel);
             } while (cursor.moveToNext());
-        } else {
-
         }
 
         cursor.close();
         db.close();
         return allExercises;
     }
+
+
+    // CYCLE_PROGRESS_TABLE methods
+    // ============================
 
     /**
      * Get the progress of all the days in the current cycle
@@ -200,9 +220,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 allDaysCompletedStatus.add(dayCompletedStatus);
 
             } while (cursor.moveToNext());
-
-        } else {
-
         }
 
         cursor.close();
@@ -268,10 +285,55 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-// just for testing purposes
-//    public void deleteAllRecords() {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        db.execSQL("DELETE FROM "+ EXERCISES_TABLE);
-//    }
+// TRAINING_HISTORY_TABLE methods
+// ==============================
+
+    /**
+     * Adds cycle to training history database
+     * @param cycle the cycle to be added
+     */
+    public boolean addToTrainingHistoryDB(CycleModel cycle) {
+        SQLiteDatabase db = this.getWritableDatabase(); // for insertable actions
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_OHP, cycle.getOhpTM());
+        cv.put(COLUMN_SQUAT, cycle.getSquatTM());
+        cv.put(COLUMN_BENCH_PRESS, cycle.getBenchPressTM());
+        cv.put(COLUMN_DEADLIFT, cycle.getDeadliftTM());
+
+        long insert = db.insert(TRAINING_HISTORY_TABLE, null, cv);
+        return (insert != -1);
+    }
+
+    /**
+     * Grabs all previous cycles
+     * @return list of previous cycles
+     */
+    public List<CycleModel> getTrainingHistory() {
+        List<CycleModel> allCycles = new ArrayList<>();
+
+        String queryString = "SELECT * FROM " + TRAINING_HISTORY_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        if (cursor.moveToFirst()) {
+            do {
+
+                // param represents column of the table
+                int ohpTM = cursor.getInt(0);
+                int squatTM = cursor.getInt(1);
+                int benchTM = cursor.getInt(2);
+                int deadliftTM = cursor.getInt(3);
+
+                CycleModel cycleModel = new CycleModel(ohpTM, squatTM, benchTM, deadliftTM);
+                allCycles.add(cycleModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return allCycles;
+    }
 
  }

@@ -46,5 +46,12 @@ public class MainActivity extends AppCompatActivity {
                     OneRepMaxActivity.class);
             startActivity(intent);
         });
+
+        Button trainingHistoryButton = findViewById(R.id.trainingHistoryButton);
+        trainingHistoryButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,
+                    TrainingHistoryActivity.class);
+            startActivity(intent);
+        });
     }
 }

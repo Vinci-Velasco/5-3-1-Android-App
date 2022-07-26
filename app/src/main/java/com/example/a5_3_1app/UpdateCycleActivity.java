@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -109,6 +110,19 @@ public class UpdateCycleActivity extends AppCompatActivity {
                     selectedExercise.setTrainingMax(selectedExercise.getTrainingMax() + updateValue);
                     db.updateExercise(selectedExercise);
                 }
+            }
+
+
+            CycleModel cycle = new CycleModel(
+                    db.getExerciseFromDB(1, false).getTrainingMax(),
+                    db.getExerciseFromDB(2, false).getTrainingMax(),
+                    db.getExerciseFromDB(3, false).getTrainingMax(),
+                    db.getExerciseFromDB(4, false).getTrainingMax()
+            );
+
+            // add current cycle to training history and reset the cycle progress
+            if (!db.addToTrainingHistoryDB(cycle)) {
+                Log.e("Error", "Adding to Training history did not work.");
             }
 
             db.resetProgressCycle();
