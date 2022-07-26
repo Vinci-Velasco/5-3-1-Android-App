@@ -76,6 +76,8 @@ public class UpdateCycleActivity extends AppCompatActivity {
     private void updateSelectedExercises() {
         updateCycleButton.setOnClickListener(view -> {
 
+
+
             // exercise name as key, update amount as value
             HashMap<String, Integer> updateValues = new HashMap<>();
             updateValues.put("Overhead Press", 5);
@@ -89,6 +91,18 @@ public class UpdateCycleActivity extends AppCompatActivity {
 
             DataBaseHelper db = new DataBaseHelper(this);
             List<ExerciseModel> allExercises = db.getAllExercises();
+
+            CycleModel cycle = new CycleModel(
+                    db.getExerciseFromDB(1, false).getTrainingMax(),
+                    db.getExerciseFromDB(2, false).getTrainingMax(),
+                    db.getExerciseFromDB(3, false).getTrainingMax(),
+                    db.getExerciseFromDB(4, false).getTrainingMax()
+            );
+
+            // add current cycle to training history before updating cycle
+            if (!db.addToTrainingHistoryDB(cycle)) {
+                Log.e("Error", "Adding to Training history did not work.");
+            };
 
             int numOfCheckBoxes = listLayout.getChildCount();
 
@@ -110,19 +124,6 @@ public class UpdateCycleActivity extends AppCompatActivity {
                     selectedExercise.setTrainingMax(selectedExercise.getTrainingMax() + updateValue);
                     db.updateExercise(selectedExercise);
                 }
-            }
-
-
-            CycleModel cycle = new CycleModel(
-                    db.getExerciseFromDB(1, false).getTrainingMax(),
-                    db.getExerciseFromDB(2, false).getTrainingMax(),
-                    db.getExerciseFromDB(3, false).getTrainingMax(),
-                    db.getExerciseFromDB(4, false).getTrainingMax()
-            );
-
-            // add current cycle to training history and reset the cycle progress
-            if (!db.addToTrainingHistoryDB(cycle)) {
-                Log.e("Error", "Adding to Training history did not work.");
             }
 
             db.resetProgressCycle();
