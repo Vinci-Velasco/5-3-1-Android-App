@@ -32,13 +32,6 @@
             android:text="@string/set_program_title" />
 
         <Button
-            android:id="@+id/trainingHistoryButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="@string/training_history_button" />
-
-        <Button
             android:id="@+id/oneRepCalcButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

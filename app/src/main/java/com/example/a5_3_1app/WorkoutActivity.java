@@ -78,7 +78,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
             // set the week and day of this cycle as completed
             DataBaseHelper db = new DataBaseHelper(WorkoutActivity.this);
-            if(!db.updateCycleProgress(week, day, true)) {
+            if(db.updateCycleProgress(week, day, true)) {
                 Toast.makeText(this, "Error with finishing workout", Toast.LENGTH_SHORT).show();
 
             } else {
@@ -121,7 +121,7 @@ public class WorkoutActivity extends AppCompatActivity {
         ExerciseModel mainExercise = db.getExerciseFromDB(day, false);
 
         // percentages of TM and reps for each set
-        double[] percentsPerSet = {0.3, 0.4, 0.5, 0, 0, 0};
+        double[] percentsPerSet = {0.4, 0.5, 0.6, 0, 0, 0};
         int[] repsPerSet = {5, 5, 3, 0, 0, 0};
 
         // set percents and reps depending on the week (FOLLOWS 5/3/1 PROGRAM)

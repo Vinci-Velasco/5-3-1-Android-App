@@ -23,12 +23,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_WEEK = "Week";
     public static final String COLUMN_IS_COMPLETED = "IsCompleted";
 
-    public static final String TRAINING_HISTORY_TABLE = "TRAINING_HISTORY";
-    public static final String COLUMN_OHP = "OHP";
-    public static final String COLUMN_SQUAT = "Squat";
-    public static final String COLUMN_BENCH_PRESS = "BenchPress";
-    public static final String COLUMN_DEADLIFT = "Deadlift";
-
     public DataBaseHelper(@Nullable Context context) {
         super(context, "exercise.db", null, 1);
     }
@@ -48,14 +42,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 COLUMN_WEEK + " INT, " + COLUMN_DAY + " INT, " +
                 COLUMN_IS_COMPLETED + " BOOL)";
         sqLiteDatabase.execSQL(createTableStatement2);
-
-        // create training history table (workout numbers of previous cycles)
-        // only contains workout numbers of the 4 main lifts
-
-        String createTableStatement3 = "CREATE TABLE " + TRAINING_HISTORY_TABLE + "(" + COLUMN_OHP
-                + " INT, " + COLUMN_SQUAT +  " INT, " + COLUMN_BENCH_PRESS + " INT, " +
-                COLUMN_DEADLIFT + " INT)";
-        sqLiteDatabase.execSQL(createTableStatement3);
     }
 
     // called if database version changes
@@ -107,7 +93,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             String exerciseName = cursor.getString(0);
             int exerciseTM = cursor.getInt(1);
             int exerciseDay = cursor.getInt(2);
-            boolean isExercise = cursor.getInt(3) == 1 ? true : false;
+            boolean isExercise = cursor.getInt(3) == 1;
 
             cursor.close();
             db.close();
@@ -152,8 +138,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /** Searches the db for the exercise. If already in the db, update the exercise. Otherwise
      * add the exercise.
-     * @param exerciseModel
-     * @return true if add or update was sucessful, false otherwise.
+     * @param exerciseModel exercise to be added or updated
+     * @return true if add or update was successful, false otherwise.
      */
     public boolean addOrUpdateExercise(ExerciseModel exerciseModel) {
         ExerciseModel exerciseModelInDB = getExerciseFromDB(
@@ -185,7 +171,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 String exerciseName = cursor.getString(0);
                 int exerciseTM = cursor.getInt(1);
                 int exerciseDay = cursor.getInt(2);
-                boolean isExercise = cursor.getInt(3) == 1 ? true : false;
+                boolean isExercise = cursor.getInt(3) == 1;
 
                 ExerciseModel exerciseModel = new ExerciseModel(exerciseName, exerciseTM,
                         exerciseDay, isExercise);
@@ -216,7 +202,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(queryString, null);
         if (cursor.moveToFirst()) {
             do {
-                boolean dayCompletedStatus = cursor.getInt(2) == 1 ? true : false;
+                boolean dayCompletedStatus = cursor.getInt(2) == 1;
                 allDaysCompletedStatus.add(dayCompletedStatus);
 
             } while (cursor.moveToNext());
@@ -265,18 +251,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         int numOfRows = db.update(CURRENT_CYCLE_PROGRESS_TABLE, cv, COLUMN_WEEK + "=? AND "
             + COLUMN_DAY + "=?", new String[] {String.valueOf(week), String.valueOf(day)});
 
-        return numOfRows == 1;
+        return numOfRows != 1;
     }
 
     /**
      * Set all cycle progress to false to reset
-     * @return
+     * @return true if reset was successful, false otherwise
      */
     public boolean resetProgressCycle() {
         for (int i = 1; i <= 3; i++) {
             for (int j = 1; j <= 4; j++) {
 
-                if(!updateCycleProgress(i, j, false)) {
+                if(updateCycleProgress(i, j, false)) {
                     return false;
                 }
             }
@@ -284,56 +270,4 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         return true;
     }
-
-// TRAINING_HISTORY_TABLE methods
-// ==============================
-
-    /**
-     * Adds cycle to training history database
-     * @param cycle the cycle to be added
-     */
-    public boolean addToTrainingHistoryDB(CycleModel cycle) {
-        SQLiteDatabase db = this.getWritableDatabase(); // for insertable actions
-        ContentValues cv = new ContentValues();
-
-        cv.put(COLUMN_OHP, cycle.getOhpTM());
-        cv.put(COLUMN_SQUAT, cycle.getSquatTM());
-        cv.put(COLUMN_BENCH_PRESS, cycle.getBenchPressTM());
-        cv.put(COLUMN_DEADLIFT, cycle.getDeadliftTM());
-
-        long insert = db.insert(TRAINING_HISTORY_TABLE, null, cv);
-        return (insert != -1);
-    }
-
-    /**
-     * Grabs all previous cycles
-     * @return list of previous cycles
-     */
-    public List<CycleModel> getTrainingHistory() {
-        List<CycleModel> allCycles = new ArrayList<>();
-
-        String queryString = "SELECT * FROM " + TRAINING_HISTORY_TABLE;
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(queryString, null);
-        if (cursor.moveToFirst()) {
-            do {
-
-                // param represents column of the table
-                int ohpTM = cursor.getInt(0);
-                int squatTM = cursor.getInt(1);
-                int benchTM = cursor.getInt(2);
-                int deadliftTM = cursor.getInt(3);
-
-                CycleModel cycleModel = new CycleModel(ohpTM, squatTM, benchTM, deadliftTM);
-                allCycles.add(cycleModel);
-
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-        return allCycles;
-    }
-
  }

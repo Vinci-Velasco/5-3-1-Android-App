@@ -14,6 +14,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // JUST USED FOR TESTING - DELETE LATER
+        // DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        // this.deleteDatabase("exercise.db");
+
         Button startWorkoutButton = (Button) findViewById(R.id.startWorkoutButton);
         startWorkoutButton.setOnClickListener(v -> {
 
@@ -44,13 +48,6 @@ public class MainActivity extends AppCompatActivity {
         oneRepMaxButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this,
                     OneRepMaxActivity.class);
-            startActivity(intent);
-        });
-
-        Button trainingHistoryButton = findViewById(R.id.trainingHistoryButton);
-        trainingHistoryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this,
-                    TrainingHistoryActivity.class);
             startActivity(intent);
         });
     }

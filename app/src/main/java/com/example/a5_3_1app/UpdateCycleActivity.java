@@ -1,11 +1,12 @@
 package com.example.a5_3_1app;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +20,7 @@ public class UpdateCycleActivity extends AppCompatActivity {
     private LinearLayout listLayout;
     private Button updateCycleButton;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,7 @@ public class UpdateCycleActivity extends AppCompatActivity {
      * Sets on click listener to updateCycleButton that updates all the exercises selected, resets
      * the cycle progress and redirects user to the Set Program page
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateSelectedExercises() {
         updateCycleButton.setOnClickListener(view -> {
 
@@ -91,18 +94,6 @@ public class UpdateCycleActivity extends AppCompatActivity {
 
             DataBaseHelper db = new DataBaseHelper(this);
             List<ExerciseModel> allExercises = db.getAllExercises();
-
-            CycleModel cycle = new CycleModel(
-                    db.getExerciseFromDB(1, false).getTrainingMax(),
-                    db.getExerciseFromDB(2, false).getTrainingMax(),
-                    db.getExerciseFromDB(3, false).getTrainingMax(),
-                    db.getExerciseFromDB(4, false).getTrainingMax()
-            );
-
-            // add current cycle to training history before updating cycle
-            if (!db.addToTrainingHistoryDB(cycle)) {
-                Log.e("Error", "Adding to Training history did not work.");
-            };
 
             int numOfCheckBoxes = listLayout.getChildCount();
 
